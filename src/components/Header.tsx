@@ -44,10 +44,10 @@ export function Header() {
             Inicio
           </a>
           <a
-            href="/discover"
+            href="/search"
             className="transition-colors hover:text-primary text-foreground/60"
           >
-            Descubrir
+            Buscar
           </a>
           <a
             href="/trending"
@@ -141,10 +141,10 @@ export function Header() {
               Inicio
             </a>
             <a
-              href="/discover"
+              href="/search"
               className="block px-3 py-2 text-base font-medium text-foreground/60 hover:text-primary hover:bg-accent rounded-md"
             >
-              Descubrir
+              Buscar
             </a>
             <a
               href="/trending"
