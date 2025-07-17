@@ -11,10 +11,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useAuth } from '@/hooks/useAuth';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Temporary state
+  const { user, signOut } = useAuth();
+  const isAuthenticated = !!user;
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -80,11 +82,11 @@ export function Header() {
           <ThemeToggle />
           {!isAuthenticated ? (
             <div className="hidden md:flex items-center space-x-2">
-              <Button variant="ghost" size="sm">
-                Iniciar Sesión
+              <Button variant="ghost" size="sm" asChild>
+                <a href="/auth">Iniciar Sesión</a>
               </Button>
-              <Button size="sm" className="bg-gradient-primary hover:opacity-90">
-                Registrarse
+              <Button size="sm" className="bg-gradient-primary hover:opacity-90" asChild>
+                <a href="/auth">Registrarse</a>
               </Button>
             </div>
           ) : (
@@ -108,7 +110,7 @@ export function Header() {
                   <span>Configuración</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Cerrar sesión</span>
                 </DropdownMenuItem>
@@ -158,11 +160,11 @@ export function Header() {
             </a>
             {!isAuthenticated && (
               <div className="px-3 py-2 space-y-2">
-                <Button variant="ghost" className="w-full justify-start">
-                  Iniciar Sesión
+                <Button variant="ghost" className="w-full justify-start" asChild>
+                  <a href="/auth">Iniciar Sesión</a>
                 </Button>
-                <Button className="w-full bg-gradient-primary hover:opacity-90">
-                  Registrarse
+                <Button className="w-full bg-gradient-primary hover:opacity-90" asChild>
+                  <a href="/auth">Registrarse</a>
                 </Button>
               </div>
             )}

@@ -14,7 +14,143 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      animes: {
+        Row: {
+          created_at: string
+          episodes: number | null
+          genre: string[] | null
+          id: string
+          image_url: string | null
+          mal_id: number | null
+          rating: number | null
+          status: string | null
+          synopsis: string | null
+          title: string
+          title_english: string | null
+        }
+        Insert: {
+          created_at?: string
+          episodes?: number | null
+          genre?: string[] | null
+          id?: string
+          image_url?: string | null
+          mal_id?: number | null
+          rating?: number | null
+          status?: string | null
+          synopsis?: string | null
+          title: string
+          title_english?: string | null
+        }
+        Update: {
+          created_at?: string
+          episodes?: number | null
+          genre?: string[] | null
+          id?: string
+          image_url?: string | null
+          mal_id?: number | null
+          rating?: number | null
+          status?: string | null
+          synopsis?: string | null
+          title?: string
+          title_english?: string | null
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          addressee_id: string
+          created_at: string
+          id: string
+          requester_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string
+          id?: string
+          requester_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string
+          id?: string
+          requester_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string
+          email: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          email: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          email?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_anime_lists: {
+        Row: {
+          anime_id: string
+          created_at: string
+          episodes_watched: number | null
+          id: string
+          score: number | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          anime_id: string
+          created_at?: string
+          episodes_watched?: number | null
+          id?: string
+          score?: number | null
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          anime_id?: string
+          created_at?: string
+          episodes_watched?: number | null
+          id?: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_anime_lists_anime_id_fkey"
+            columns: ["anime_id"]
+            isOneToOne: false
+            referencedRelation: "animes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
