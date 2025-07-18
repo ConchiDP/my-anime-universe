@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { AnimeSearch } from '@/components/AnimeSearch';
@@ -9,6 +9,15 @@ import { Loader2 } from 'lucide-react';
 const Search = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [initialQuery, setInitialQuery] = useState('');
+
+  useEffect(() => {
+    const query = searchParams.get('q');
+    if (query) {
+      setInitialQuery(query);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -42,7 +51,7 @@ const Search = () => {
             </p>
           </div>
           
-          <AnimeSearch />
+          <AnimeSearch initialQuery={initialQuery} />
         </div>
       </main>
       <Footer />

@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Search from "./pages/Search";
 import MyList from "./pages/MyList";
+import AnimeDetails from "./pages/AnimeDetails";
+import Friends from "./pages/Friends";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/search" element={<Search />} />
               <Route path="/my-list" element={<MyList />} />
+              <Route path="/anime/:id" element={<AnimeDetails />} />
+              <Route path="/friends" element={<Friends />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

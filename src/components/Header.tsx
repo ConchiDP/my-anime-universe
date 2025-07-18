@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Menu, X, Search, User, Settings, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,10 +16,20 @@ import { useAuth } from '@/hooks/useAuth';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const isAuthenticated = !!user;
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -61,19 +72,27 @@ export function Header() {
           >
             Mi Lista
           </a>
+          <a
+            href="/friends"
+            className="transition-colors hover:text-primary text-foreground/60"
+          >
+            Amigos
+          </a>
         </nav>
 
         {/* Search Bar */}
         <div className="flex flex-1 items-center justify-end space-x-2">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            <div className="relative max-w-sm">
+            <form onSubmit={handleSearch} className="relative max-w-sm">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Buscar anime..."
                 className="pl-8 md:w-[300px] lg:w-[400px]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
+            </form>
           </div>
         </div>
 
@@ -157,6 +176,12 @@ export function Header() {
               className="block px-3 py-2 text-base font-medium text-foreground/60 hover:text-primary hover:bg-accent rounded-md"
             >
               Mi Lista
+            </a>
+            <a
+              href="/friends"
+              className="block px-3 py-2 text-base font-medium text-foreground/60 hover:text-primary hover:bg-accent rounded-md"
+            >
+              Amigos
             </a>
             {!isAuthenticated && (
               <div className="px-3 py-2 space-y-2">

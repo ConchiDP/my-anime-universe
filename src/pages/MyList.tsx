@@ -5,7 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Star, Edit, Play, Pause, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Star, Edit, Play, Pause, CheckCircle, XCircle, Clock, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const statusConfig = {
   watching: { label: "Viendo", icon: Play, color: "bg-blue-500" },
@@ -93,8 +96,18 @@ export default function MyList() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Mi Lista de Anime</h1>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto p-6">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/" className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Volver
+            </Link>
+          </Button>
+          <h1 className="text-3xl font-bold">Mi Lista de Anime</h1>
+        </div>
       
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full grid-cols-6 mb-6">
@@ -138,7 +151,9 @@ export default function MyList() {
             </div>
           </TabsContent>
         ))}
-      </Tabs>
+        </Tabs>
+      </main>
+      <Footer />
     </div>
   );
 }

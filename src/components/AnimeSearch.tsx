@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Star, Calendar, Tv } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +17,18 @@ import { useAnimeSearch } from '@/hooks/useAnimeSearch';
 import { useAddAnimeToList, AnimeStatus } from '@/hooks/useUserAnimeList';
 import { AnimeSearchResult } from '@/lib/jikan-api';
 
-export const AnimeSearch = () => {
-  const [query, setQuery] = useState('');
+interface AnimeSearchProps {
+  initialQuery?: string;
+}
+
+export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
+  const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    if (initialQuery) {
+      setQuery(initialQuery);
+    }
+  }, [initialQuery]);
   const { data: searchResults, isLoading, error } = useAnimeSearch(query);
   const addAnimeToList = useAddAnimeToList();
 
@@ -128,45 +139,57 @@ export const AnimeSearch = () => {
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
-                    <Select onValueChange={(status) => handleAddToList(anime, status as AnimeStatus)}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Agregar a lista" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="watching">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            Viendo
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="plan_to_watch">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            Planeo ver
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="completed">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            Completado
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="on_hold">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            En pausa
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="dropped">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            Abandonado
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </CardContent>
+                   <CardContent className="pt-0 space-y-2">
+                     <div className="flex gap-2">
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         className="flex-1"
+                         asChild
+                       >
+                         <Link to={`/anime/${anime.mal_id}`}>
+                           Ver Detalles
+                         </Link>
+                       </Button>
+                     </div>
+                     <Select onValueChange={(status) => handleAddToList(anime, status as AnimeStatus)}>
+                       <SelectTrigger className="w-full">
+                         <SelectValue placeholder="Agregar a lista" />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="watching">
+                           <div className="flex items-center gap-2">
+                             <Plus className="h-4 w-4" />
+                             Viendo
+                           </div>
+                         </SelectItem>
+                         <SelectItem value="plan_to_watch">
+                           <div className="flex items-center gap-2">
+                             <Plus className="h-4 w-4" />
+                             Planeo ver
+                           </div>
+                         </SelectItem>
+                         <SelectItem value="completed">
+                           <div className="flex items-center gap-2">
+                             <Plus className="h-4 w-4" />
+                             Completado
+                           </div>
+                         </SelectItem>
+                         <SelectItem value="on_hold">
+                           <div className="flex items-center gap-2">
+                             <Plus className="h-4 w-4" />
+                             En pausa
+                           </div>
+                         </SelectItem>
+                         <SelectItem value="dropped">
+                           <div className="flex items-center gap-2">
+                             <Plus className="h-4 w-4" />
+                             Abandonado
+                           </div>
+                         </SelectItem>
+                       </SelectContent>
+                     </Select>
+                   </CardContent>
                 </Card>
               ))}
             </div>
