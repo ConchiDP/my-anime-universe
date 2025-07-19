@@ -1,11 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Users, UserPlus } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, Clock } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
+import { SearchUsers } from '@/components/SearchUsers';
+import { FriendRequests } from '@/components/FriendRequests';
+import { FriendsList } from '@/components/FriendsList';
 
 export default function Friends() {
   const { user, loading } = useAuth();
@@ -42,44 +46,52 @@ export default function Friends() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-20 space-y-6">
-            <div className="flex justify-center">
-              <div className="p-6 bg-muted/50 rounded-full">
-                <Users className="w-16 h-16 text-muted-foreground" />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold">Sistema de Amigos</h2>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                Conecta con otros usuarios, comparte tus listas de anime y descubre nuevas recomendaciones.
-              </p>
-            </div>
+          <Tabs defaultValue="friends" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="friends" className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Mis Amigos
+              </TabsTrigger>
+              <TabsTrigger value="search" className="flex items-center gap-2">
+                <UserPlus className="w-4 h-4" />
+                Buscar
+              </TabsTrigger>
+              <TabsTrigger value="requests" className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                Solicitudes
+              </TabsTrigger>
+            </TabsList>
 
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                🚧 Esta funcionalidad está en desarrollo
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="flex items-center gap-2" disabled>
-                  <UserPlus className="w-4 h-4" />
-                  Buscar Amigos
-                </Button>
-                
-                <Button variant="outline" disabled>
-                  Ver Solicitudes
-                </Button>
-              </div>
-            </div>
+            <div className="mt-6">
+              <TabsContent value="friends" className="space-y-4">
+                <FriendsList />
+              </TabsContent>
 
-            <div className="pt-8">
-              <p className="text-xs text-muted-foreground">
-                Próximamente: Buscar usuarios, enviar solicitudes de amistad, 
-                ver listas de amigos y recibir recomendaciones personalizadas.
-              </p>
+              <TabsContent value="search" className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Buscar Nuevos Amigos</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Encuentra otros usuarios por nombre o email para agregar a tu lista de amigos.
+                    </p>
+                  </div>
+                  <SearchUsers />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="requests" className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Gestionar Solicitudes</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Revisa las solicitudes de amistad que has enviado y recibido.
+                    </p>
+                  </div>
+                  <FriendRequests />
+                </div>
+              </TabsContent>
             </div>
-          </div>
+          </Tabs>
         </div>
       </main>
       <Footer />
