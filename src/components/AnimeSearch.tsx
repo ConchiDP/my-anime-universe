@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AnimeTypeBadge } from '@/components/AnimeTypeBadge';
+import { AnimeTypeFilter } from '@/components/AnimeTypeFilter';
 import {
   Select,
   SelectContent,
@@ -23,13 +25,15 @@ interface AnimeSearchProps {
 
 export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
   const [query, setQuery] = useState(initialQuery);
+  const [typeFilter, setTypeFilter] = useState('ALL');
 
   useEffect(() => {
     if (initialQuery) {
       setQuery(initialQuery);
     }
   }, [initialQuery]);
-  const { data: searchResults, isLoading, error } = useAnimeSearch(query);
+  
+  const { data: searchResults, isLoading, error } = useAnimeSearch(query, typeFilter);
   const addAnimeToList = useAddAnimeToList();
 
   const handleAddToList = (anime: AnimeSearchResult, status: AnimeStatus) => {
@@ -49,15 +53,20 @@ export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Barra de búsqueda */}
-      <div className="relative max-w-2xl mx-auto">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="text"
-          placeholder="Buscar anime por título..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 h-12 text-lg"
+      {/* Filtros */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Buscar anime por título..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <AnimeTypeFilter 
+          value={typeFilter} 
+          onValueChange={setTypeFilter}
         />
       </div>
 
@@ -122,7 +131,8 @@ export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
                       {anime.title_english || anime.title}
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      <div className="flex items-center gap-2 text-muted-foreground">
+                      <div className="flex items-center gap-2 text-muted-foreground flex-wrap">
+                        <AnimeTypeBadge type={anime.type} />
                         {anime.episodes && (
                           <span className="flex items-center gap-1">
                             <Tv className="h-3 w-3" />

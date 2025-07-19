@@ -1,6 +1,28 @@
 // API de Jikan para MyAnimeList
 const JIKAN_BASE_URL = 'https://api.jikan.moe/v4';
 
+// Tipos de anime según MyAnimeList
+export const ANIME_TYPES = {
+  TV: 'TV',
+  MOVIE: 'Movie', 
+  OVA: 'OVA',
+  ONA: 'ONA',
+  SPECIAL: 'Special',
+  MUSIC: 'Music'
+} as const;
+
+export type AnimeType = keyof typeof ANIME_TYPES;
+
+// Configuración de tipos para filtros
+export const animeTypeConfig = {
+  TV: { label: 'Series', color: 'bg-blue-500', description: 'Series de televisión' },
+  MOVIE: { label: 'Películas', color: 'bg-red-500', description: 'Largometrajes' },
+  OVA: { label: 'OVA', color: 'bg-green-500', description: 'Original Video Animation' },
+  ONA: { label: 'ONA', color: 'bg-purple-500', description: 'Original Net Animation' },
+  SPECIAL: { label: 'Especiales', color: 'bg-yellow-500', description: 'Episodios especiales' },
+  MUSIC: { label: 'Música', color: 'bg-pink-500', description: 'Videos musicales' }
+};
+
 export interface AnimeSearchResult {
   mal_id: number;
   title: string;
@@ -30,9 +52,15 @@ export interface JikanResponse {
   };
 }
 
-// Buscar animes por nombre
-export async function searchAnimes(query: string, page = 1): Promise<JikanResponse> {
-  const response = await fetch(`${JIKAN_BASE_URL}/anime?q=${encodeURIComponent(query)}&page=${page}&limit=20`);
+// Buscar animes por nombre con filtro de tipo opcional
+export async function searchAnimes(query: string, page = 1, type?: string): Promise<JikanResponse> {
+  let url = `${JIKAN_BASE_URL}/anime?q=${encodeURIComponent(query)}&page=${page}&limit=20`;
+  
+  if (type && type !== 'ALL') {
+    url += `&type=${type.toLowerCase()}`;
+  }
+  
+  const response = await fetch(url);
   
   if (!response.ok) {
     throw new Error('Error al buscar animes');
@@ -53,9 +81,15 @@ export async function getAnimeById(malId: number): Promise<AnimeSearchResult> {
   return data.data;
 }
 
-// Obtener animes populares
-export async function getTopAnimes(page = 1): Promise<JikanResponse> {
-  const response = await fetch(`${JIKAN_BASE_URL}/top/anime?page=${page}&limit=20`);
+// Obtener animes populares con filtro de tipo opcional
+export async function getTopAnimes(page = 1, type?: string): Promise<JikanResponse> {
+  let url = `${JIKAN_BASE_URL}/top/anime?page=${page}&limit=20`;
+  
+  if (type && type !== 'ALL') {
+    url += `&type=${type.toLowerCase()}`;
+  }
+  
+  const response = await fetch(url);
   
   if (!response.ok) {
     throw new Error('Error al obtener animes populares');

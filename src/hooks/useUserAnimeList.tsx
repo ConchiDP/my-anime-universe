@@ -23,17 +23,19 @@ export interface UserAnimeEntry {
     image_url: string | null;
     episodes: number | null;
     synopsis: string | null;
+    type: string | null;
   };
 }
 
-export const useUserAnimeList = (status?: AnimeStatus) => {
+// Hook para obtener la lista de animes del usuario con filtros
+export const useUserAnimeList = (statusFilter?: AnimeStatus, typeFilter?: string) => {
   const { user } = useAuth();
-
+  
   return useQuery({
-    queryKey: ['userAnimeList', user?.id, status],
+    queryKey: ['userAnimeList', user?.id, statusFilter, typeFilter],
     queryFn: async () => {
       if (!user) return [];
-
+      
       let query = supabase
         .from('user_anime_lists')
         .select(`
@@ -45,19 +47,30 @@ export const useUserAnimeList = (status?: AnimeStatus) => {
             title_english,
             image_url,
             episodes,
-            synopsis
+            synopsis,
+            type
           )
         `)
         .eq('user_id', user.id);
-
-      if (status) {
-        query = query.eq('status', status);
+      
+      // Aplicar filtro por estado si se proporciona
+      if (statusFilter) {
+        query = query.eq('status', statusFilter);
       }
-
+      
       const { data, error } = await query.order('updated_at', { ascending: false });
-
+      
       if (error) throw error;
-      return data as UserAnimeEntry[];
+      
+      // Aplicar filtro por tipo después de obtener los datos (ya que es de la tabla animes)
+      let filteredData = data || [];
+      if (typeFilter && typeFilter !== 'ALL') {
+        filteredData = filteredData.filter(entry => 
+          entry.animes?.type?.toUpperCase() === typeFilter.toUpperCase()
+        );
+      }
+      
+      return filteredData as UserAnimeEntry[];
     },
     enabled: !!user,
   });
@@ -101,6 +114,7 @@ export const useAddAnimeToList = () => {
             status: anime.status,
             genre: anime.genres?.map(g => g.name) || [],
             rating: anime.score,
+            type: anime.type,
           })
           .select('id')
           .single();

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserAnimeList, useUpdateAnimeStatus, AnimeStatus } from "@/hooks/useUserAnimeList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimeTypeBadge } from "@/components/AnimeTypeBadge";
+import { AnimeTypeFilter } from "@/components/AnimeTypeFilter";
 import { Star, Edit, Play, Pause, CheckCircle, XCircle, Clock, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -20,7 +23,8 @@ const statusConfig = {
 
 export default function MyList() {
   const { user, loading } = useAuth();
-  const { data: animeList, error, isLoading } = useUserAnimeList();
+  const [typeFilter, setTypeFilter] = useState('ALL');
+  const { data: animeList, error, isLoading } = useUserAnimeList(undefined, typeFilter);
   const updateStatus = useUpdateAnimeStatus();
 
   if (loading) return <div className="p-4">Cargando usuario...</div>;
@@ -34,6 +38,14 @@ export default function MyList() {
     acc[entry.status].push(entry);
     return acc;
   }, {} as Record<AnimeStatus, typeof animeList>) || {};
+
+  // Contar tipos para mostrar en el filtro
+  const typeCounts = animeList?.reduce((acc, entry) => {
+    const type = entry.animes?.type?.toUpperCase() || 'UNKNOWN';
+    acc[type] = (acc[type] || 0) + 1;
+    acc.ALL = (acc.ALL || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>) || {};
 
   const handleStatusChange = (entryId: string, newStatus: AnimeStatus) => {
     updateStatus.mutate({ entryId, status: newStatus });
@@ -54,11 +66,12 @@ export default function MyList() {
           <div className="flex-1 p-4">
             <CardHeader className="p-0 mb-2">
               <CardTitle className="text-lg">{entry.animes.title}</CardTitle>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="secondary" className="flex items-center gap-1">
                   <Icon className="w-3 h-3" />
                   {statusInfo.label}
                 </Badge>
+                <AnimeTypeBadge type={entry.animes.type || 'Unknown'} />
                 {entry.score && (
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -108,7 +121,32 @@ export default function MyList() {
           </Button>
           <h1 className="text-3xl font-bold">Mi Lista de Anime</h1>
         </div>
-      
+
+        {/* Filtro por tipo */}
+        <div className="flex justify-between items-center mb-6">
+          <AnimeTypeFilter 
+            value={typeFilter} 
+            onValueChange={setTypeFilter}
+            showCounts={true}
+            counts={typeCounts}
+          />
+          <div className="text-sm text-muted-foreground">
+            Total: {animeList?.length || 0} animes
+          </div>
+        </div>
+
+        {/* Filtro por tipo */}
+        <div className="flex justify-between items-center mb-6">
+          <AnimeTypeFilter 
+            value={typeFilter} 
+            onValueChange={setTypeFilter}
+            showCounts={true}
+            counts={typeCounts}
+          />
+          <div className="text-sm text-muted-foreground">
+            Total: {animeList?.length || 0} animes
+          </div>
+        </div>
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full grid-cols-6 mb-6">
           <TabsTrigger value="all">Todos ({animeList?.length || 0})</TabsTrigger>

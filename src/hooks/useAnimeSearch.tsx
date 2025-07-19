@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { searchAnimes, getTopAnimes, getCurrentSeasonAnimes, AnimeSearchResult } from '@/lib/jikan-api';
 
-export const useAnimeSearch = (query: string) => {
+export const useAnimeSearch = (query: string, type?: string) => {
   const [debouncedQuery, setDebouncedQuery] = useState(query);
 
   // Debounce para evitar demasiadas requests
@@ -15,17 +15,17 @@ export const useAnimeSearch = (query: string) => {
   }, [query]);
 
   return useQuery({
-    queryKey: ['animeSearch', debouncedQuery],
-    queryFn: () => searchAnimes(debouncedQuery),
+    queryKey: ['animeSearch', debouncedQuery, type],
+    queryFn: () => searchAnimes(debouncedQuery, 1, type),
     enabled: debouncedQuery.length > 2,
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 };
 
-export const useTopAnimes = () => {
+export const useTopAnimes = (type?: string) => {
   return useQuery({
-    queryKey: ['topAnimes'],
-    queryFn: () => getTopAnimes(),
+    queryKey: ['topAnimes', type],
+    queryFn: () => getTopAnimes(1, type),
     staleTime: 10 * 60 * 1000, // 10 minutos
   });
 };
