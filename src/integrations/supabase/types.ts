@@ -59,6 +59,36 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_invitations: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          invitation_code: string
+          inviter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          invitation_code: string
+          inviter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          invitation_code?: string
+          inviter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string

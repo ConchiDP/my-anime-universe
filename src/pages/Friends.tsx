@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { SearchUsers } from '@/components/SearchUsers';
 import { FriendRequests } from '@/components/FriendRequests';
 import { FriendsList } from '@/components/FriendsList';
+import { SentInvitations } from '@/components/SentInvitations';
 
 export default function Friends() {
   const { user, loading } = useAuth();
@@ -47,18 +48,22 @@ export default function Friends() {
 
         <div className="max-w-4xl mx-auto">
           <Tabs defaultValue="friends" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="friends" className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 Mis Amigos
               </TabsTrigger>
               <TabsTrigger value="search" className="flex items-center gap-2">
                 <UserPlus className="w-4 h-4" />
-                Buscar
+                Buscar/Invitar
               </TabsTrigger>
               <TabsTrigger value="requests" className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 Solicitudes
+              </TabsTrigger>
+              <TabsTrigger value="invitations" className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                Invitaciones
               </TabsTrigger>
             </TabsList>
 
@@ -70,9 +75,9 @@ export default function Friends() {
               <TabsContent value="search" className="space-y-4">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Buscar Nuevos Amigos</h3>
+                    <h3 className="text-lg font-semibold mb-2">Buscar Amigos o Invitar por Email</h3>
                     <p className="text-muted-foreground text-sm mb-4">
-                      Encuentra otros usuarios por nombre o email para agregar a tu lista de amigos.
+                      Encuentra usuarios registrados o invita a amigos que no tienen la app.
                     </p>
                   </div>
                   <SearchUsers />
@@ -88,6 +93,17 @@ export default function Friends() {
                     </p>
                   </div>
                   <FriendRequests />
+                </div>
+              </TabsContent>
+              <TabsContent value="invitations" className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Invitaciones por Email</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Revisa las invitaciones que has enviado a amigos para que se unan a la app.
+                    </p>
+                  </div>
+                  <SentInvitations />
                 </div>
               </TabsContent>
             </div>

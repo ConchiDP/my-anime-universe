@@ -3,16 +3,23 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Search, UserPlus, Loader2 } from 'lucide-react';
-import { useSearchUsers, useSendFriendRequest } from '@/hooks/useFriends';
+import { Badge } from '@/components/ui/badge';
+import { Search, UserPlus, Loader2, Mail, Send } from 'lucide-react';
+import { useSearchUsersAndEmails, useSendEmailInvitation } from '@/hooks/useInvitations';
+import { useSendFriendRequest } from '@/hooks/useFriends';
 
 export const SearchUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data: users = [], isLoading } = useSearchUsers(searchTerm);
+  const { data: searchResult, isLoading } = useSearchUsersAndEmails(searchTerm);
   const sendRequest = useSendFriendRequest();
+  const sendInvitation = useSendEmailInvitation();
 
   const handleSendRequest = (userId: string) => {
     sendRequest.mutate(userId);
+  };
+
+  const handleSendInvitation = (email: string) => {
+    sendInvitation.mutate(email);
   };
 
   return (
@@ -20,7 +27,7 @@ export const SearchUsers = () => {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
         <Input
-          placeholder="Buscar usuarios por nombre o email..."
+          placeholder="Buscar por nombre, email o invitar por email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -33,12 +40,34 @@ export const SearchUsers = () => {
             <div className="flex justify-center py-4">
               <Loader2 className="w-6 h-6 animate-spin" />
             </div>
-          ) : users.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">
-              No se encontraron usuarios
-            </p>
-          ) : (
-            users.map((user) => (
+          ) : searchResult?.isEmail && !searchResult.emailExists ? (
+            // Mostrar opción de invitación por email
+            <Card className="border-dashed border-2 border-primary/20">
+              <CardContent className="flex items-center justify-between p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    <Mail className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium">{searchResult.email}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Esta persona no tiene cuenta. ¡Invítala!
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => handleSendInvitation(searchResult.email!)}
+                  disabled={sendInvitation.isPending}
+                  className="flex items-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  Enviar Invitación
+                </Button>
+              </CardContent>
+            </Card>
+          ) : searchResult?.users && searchResult.users.length > 0 ? (
+            // Mostrar usuarios existentes
+            searchResult.users.map((user) => (
               <Card key={user.id}>
                 <CardContent className="flex items-center justify-between p-4">
                   <div className="flex items-center space-x-3">
@@ -50,6 +79,11 @@ export const SearchUsers = () => {
                     <div>
                       <p className="font-medium">{user.display_name}</p>
                       <p className="text-sm text-muted-foreground">{user.email}</p>
+                      {searchResult.isEmail && (
+                        <Badge variant="secondary" className="mt-1">
+                          Usuario existente
+                        </Badge>
+                      )}
                     </div>
                   </div>
                   <Button
@@ -64,6 +98,14 @@ export const SearchUsers = () => {
                 </CardContent>
               </Card>
             ))
+          ) : (
+            // No se encontraron resultados
+            <p className="text-center text-muted-foreground py-4">
+              {searchResult?.isEmail 
+                ? "No se encontró usuario con este email" 
+                : "No se encontraron usuarios"
+              }
+            </p>
           )}
         </div>
       )}
