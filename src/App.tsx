@@ -11,6 +11,7 @@ import Search from "./pages/Search";
 import MyList from "./pages/MyList";
 import AnimeDetails from "./pages/AnimeDetails";
 import Friends from "./pages/Friends";
+import FriendComparison from "./pages/FriendComparison";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/my-list" element={<MyList />} />
               <Route path="/anime/:id" element={<AnimeDetails />} />
               <Route path="/friends" element={<Friends />} />
+              <Route path="/friends/compare/:friendId" element={<FriendComparison />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

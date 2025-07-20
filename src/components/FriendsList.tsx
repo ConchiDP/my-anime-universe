@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Users, UserMinus, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useFriends, useRemoveFriend } from '@/hooks/useFriends';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -84,9 +85,11 @@ export const FriendsList = () => {
                   </div>
                   
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      Ver Lista
+                    <Button size="sm" variant="outline" className="flex items-center gap-1" asChild>
+                      <Link to={`/friends/compare/${friend?.user_id}`}>
+                        <Eye className="w-3 h-3" />
+                        Comparar Listas
+                      </Link>
                     </Button>
                     
                     <AlertDialog>
