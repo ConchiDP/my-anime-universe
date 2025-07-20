@@ -27,6 +27,7 @@ export type Database = {
           synopsis: string | null
           title: string
           title_english: string | null
+          type: string | null
         }
         Insert: {
           created_at?: string
@@ -40,6 +41,7 @@ export type Database = {
           synopsis?: string | null
           title: string
           title_english?: string | null
+          type?: string | null
         }
         Update: {
           created_at?: string
@@ -53,6 +55,7 @@ export type Database = {
           synopsis?: string | null
           title?: string
           title_english?: string | null
+          type?: string | null
         }
         Relationships: []
       }
