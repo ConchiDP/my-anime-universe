@@ -14,8 +14,11 @@ const Search = () => {
 
   useEffect(() => {
     const query = searchParams.get('q');
+    const filter = searchParams.get('filter');
     if (query) {
       setInitialQuery(query);
+    } else if (filter === 'trending') {
+      setInitialQuery('trending');
     }
   }, [searchParams]);
 
