@@ -61,7 +61,7 @@ export function Header() {
             Buscar
           </a>
           <a
-            href="/trending"
+            href="/search?trending=true"
             className="transition-colors hover:text-primary text-foreground/60"
           >
             Tendencias
@@ -166,7 +166,7 @@ export function Header() {
               Buscar
             </a>
             <a
-              href="/trending"
+              href="/search?trending=true"
               className="block px-3 py-2 text-base font-medium text-foreground/60 hover:text-primary hover:bg-accent rounded-md"
             >
               Tendencias

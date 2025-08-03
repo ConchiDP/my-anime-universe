@@ -21,7 +21,11 @@ export function Hero() {
       try {
         const response = await fetch('https://api.jikan.moe/v4/top/anime?filter=airing&limit=6');
         const data = await response.json();
-        setTrendingAnimes(data.data || []);
+        // Filtrar duplicados por mal_id
+        const uniqueAnimes = data.data?.filter((anime: any, index: number, self: any[]) => 
+          index === self.findIndex((a: any) => a.mal_id === anime.mal_id)
+        ) || [];
+        setTrendingAnimes(uniqueAnimes);
       } catch (error) {
         console.error('Error fetching trending animes:', error);
       } finally {
@@ -38,7 +42,7 @@ export function Hero() {
   const planToWatchCount = userAnimeList?.filter(anime => anime.status === 'plan_to_watch').length || 0;
 
   const handleDiscoverTrends = () => {
-    navigate('/search?filter=trending');
+    navigate('/search?trending=true');
   };
 
   const handleExploreAnime = () => {

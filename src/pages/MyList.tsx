@@ -134,19 +134,6 @@ export default function MyList() {
             Total: {animeList?.length || 0} animes
           </div>
         </div>
-
-        {/* Filtro por tipo */}
-        <div className="flex justify-between items-center mb-6">
-          <AnimeTypeFilter 
-            value={typeFilter} 
-            onValueChange={setTypeFilter}
-            showCounts={true}
-            counts={typeCounts}
-          />
-          <div className="text-sm text-muted-foreground">
-            Total: {animeList?.length || 0} animes
-          </div>
-        </div>
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full grid-cols-6 mb-6">
           <TabsTrigger value="all">Todos ({animeList?.length || 0})</TabsTrigger>
