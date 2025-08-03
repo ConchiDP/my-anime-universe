@@ -21,9 +21,10 @@ import { AnimeSearchResult } from '@/lib/jikan-api';
 
 interface AnimeSearchProps {
   initialQuery?: string;
+  isTrending?: boolean;
 }
 
-export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
+export const AnimeSearch = ({ initialQuery = "", isTrending = false }: AnimeSearchProps) => {
   const [query, setQuery] = useState(initialQuery);
   const [typeFilter, setTypeFilter] = useState('ALL');
   const [trendingAnimes, setTrendingAnimes] = useState<any[]>([]);
@@ -32,12 +33,13 @@ export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
   useEffect(() => {
     if (initialQuery) {
       setQuery(initialQuery);
-      // Si es trending, cargar animes trending
-      if (initialQuery === 'trending') {
-        fetchTrendingAnimes();
-      }
     }
-  }, [initialQuery]);
+    // Si es trending o viene como parámetro, cargar animes trending
+    if (initialQuery === 'trending' || isTrending) {
+      fetchTrendingAnimes();
+      setQuery('trending');
+    }
+  }, [initialQuery, isTrending]);
 
   const fetchTrendingAnimes = async () => {
     setIsLoadingTrending(true);
@@ -72,28 +74,30 @@ export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Filtros */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Buscar anime por título..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-10"
+      {/* Filtros - Solo mostrar búsqueda si no es trending */}
+      {!isTrending && (
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Buscar anime por título..."
+              value={query === 'trending' ? '' : query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <AnimeTypeFilter 
+            value={typeFilter} 
+            onValueChange={setTypeFilter}
           />
         </div>
-        <AnimeTypeFilter 
-          value={typeFilter} 
-          onValueChange={setTypeFilter}
-        />
-      </div>
+      )}
 
       {/* Resultados de búsqueda o tendencias */}
-      {(query.length > 2 || query === 'trending') && (
+      {(query.length > 2 || query === 'trending' || isTrending) && (
         <div className="space-y-4">
           <h3 className="text-xl font-semibold">
-            {query === 'trending' ? '🔥 Animes en Tendencia' : `Resultados para "${query}"`}
+            {(query === 'trending' || isTrending) ? '🔥 Animes en Tendencia' : `Resultados para "${query}"`}
           </h3>
           
           {/* Loading state */}
@@ -131,7 +135,7 @@ export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
           )}
 
           {/* Trending results */}
-          {query === 'trending' && !isLoadingTrending && trendingAnimes.length > 0 && (
+          {(query === 'trending' || isTrending) && !isLoadingTrending && trendingAnimes.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {trendingAnimes.map((anime) => (
                 <Card key={anime.mal_id} className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -229,7 +233,7 @@ export const AnimeSearch = ({ initialQuery = "" }: AnimeSearchProps) => {
           )}
 
           {/* Regular search results */}
-          {searchResults && searchResults.data.length > 0 && query !== 'trending' && (
+          {searchResults && searchResults.data.length > 0 && query !== 'trending' && !isTrending && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {searchResults.data.map((anime) => (
                 <Card key={anime.mal_id} className="overflow-hidden hover:shadow-lg transition-shadow">
