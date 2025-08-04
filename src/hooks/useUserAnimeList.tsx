@@ -186,7 +186,7 @@ export const useUpdateAnimeStatus = () => {
       const updateData: any = {};
       
       if (status !== undefined) updateData.status = status;
-      if (score !== undefined) updateData.score = score;
+      if (score !== undefined) updateData.score = score === 0 ? null : score;
       if (episodesWatched !== undefined) updateData.episodes_watched = episodesWatched;
 
       const { data, error } = await supabase

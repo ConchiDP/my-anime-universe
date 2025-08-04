@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Star } from 'lucide-react';
+import { Star, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface StarRatingProps {
   rating: number;
@@ -46,7 +47,7 @@ export const StarRating = ({
   const displayRating = hoverRating || rating;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <div 
         className="flex items-center gap-1" 
         onMouseLeave={handleMouseLeave}
@@ -94,8 +95,20 @@ export const StarRating = ({
         })}
       </div>
       
+      {!readonly && rating > 0 && onRatingChange && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onRatingChange(0)}
+          className="h-6 w-6 p-0 hover:bg-destructive/10"
+          title="Quitar calificación"
+        >
+          <X className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+        </Button>
+      )}
+      
       {showValue && (
-        <span className="text-sm text-muted-foreground ml-2">
+        <span className="text-sm text-muted-foreground">
           {rating > 0 ? `${rating}/10` : 'Sin calificar'}
         </span>
       )}
