@@ -8,15 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnimeTypeBadge } from '@/components/AnimeTypeBadge';
 import { AnimeTypeFilter } from '@/components/AnimeTypeFilter';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { AddAnimeDialog } from '@/components/AddAnimeDialog';
 import { useAnimeSearch } from '@/hooks/useAnimeSearch';
-import { useAddAnimeToList, AnimeStatus } from '@/hooks/useUserAnimeList';
 import { AnimeSearchResult } from '@/lib/jikan-api';
 
 interface AnimeSearchProps {
@@ -59,22 +52,6 @@ export const AnimeSearch = ({ initialQuery = "", isTrending = false }: AnimeSear
   };
   
   const { data: searchResults, isLoading, error } = useAnimeSearch(query === 'trending' ? '' : query, typeFilter);
-  const addAnimeToList = useAddAnimeToList();
-
-  const handleAddToList = (anime: AnimeSearchResult, status: AnimeStatus) => {
-    addAnimeToList.mutate({ anime, status });
-  };
-
-  const getStatusLabel = (status: AnimeStatus) => {
-    const labels = {
-      watching: 'Viendo',
-      completed: 'Completado',
-      on_hold: 'En pausa',
-      dropped: 'Abandonado',
-      plan_to_watch: 'Planeo ver',
-    };
-    return labels[status];
-  };
 
   return (
     <div className="space-y-6">
@@ -192,44 +169,8 @@ export const AnimeSearch = ({ initialQuery = "", isTrending = false }: AnimeSear
                            Ver Detalles
                          </Link>
                        </Button>
+                       <AddAnimeDialog anime={anime} />
                      </div>
-                     <Select onValueChange={(status) => handleAddToList(anime, status as AnimeStatus)}>
-                       <SelectTrigger className="w-full">
-                         <SelectValue placeholder="Agregar a lista" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         <SelectItem value="watching">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Viendo
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="plan_to_watch">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Planeo ver
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="completed">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Completado
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="on_hold">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             En pausa
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="dropped">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Abandonado
-                           </div>
-                         </SelectItem>
-                       </SelectContent>
-                     </Select>
                    </CardContent>
                 </Card>
               ))}
@@ -290,44 +231,8 @@ export const AnimeSearch = ({ initialQuery = "", isTrending = false }: AnimeSear
                            Ver Detalles
                          </Link>
                        </Button>
+                       <AddAnimeDialog anime={anime} />
                      </div>
-                     <Select onValueChange={(status) => handleAddToList(anime, status as AnimeStatus)}>
-                       <SelectTrigger className="w-full">
-                         <SelectValue placeholder="Agregar a lista" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         <SelectItem value="watching">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Viendo
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="plan_to_watch">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Planeo ver
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="completed">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Completado
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="on_hold">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             En pausa
-                           </div>
-                         </SelectItem>
-                         <SelectItem value="dropped">
-                           <div className="flex items-center gap-2">
-                             <Plus className="h-4 w-4" />
-                             Abandonado
-                           </div>
-                         </SelectItem>
-                       </SelectContent>
-                     </Select>
                    </CardContent>
                 </Card>
               ))}

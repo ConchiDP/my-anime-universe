@@ -5,9 +5,8 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
-import { useAddAnimeToList, AnimeStatus } from '@/hooks/useUserAnimeList';
+import { AddAnimeDialog } from '@/components/AddAnimeDialog';
 import { ArrowLeft, Star, Calendar, TvIcon, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -45,7 +44,6 @@ export default function AnimeDetails() {
   const { user, loading } = useAuth();
   const [anime, setAnime] = useState<AnimeDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const addToList = useAddAnimeToList();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -73,34 +71,6 @@ export default function AnimeDetails() {
     fetchAnimeDetails();
   }, [id, user, loading, navigate]);
 
-  const handleAddToList = (status: AnimeStatus) => {
-    if (!anime) return;
-    
-    const animeData = {
-      mal_id: anime.mal_id,
-      title: anime.title,
-      title_english: anime.title_english || null,
-      images: {
-        jpg: {
-          image_url: anime.images.jpg.large_image_url,
-          small_image_url: anime.images.jpg.large_image_url,
-          large_image_url: anime.images.jpg.large_image_url,
-        }
-      },
-      episodes: anime.episodes || null,
-      synopsis: anime.synopsis || null,
-      score: anime.score || null,
-      status: anime.status || null,
-      genres: anime.genres || [],
-      year: anime.aired?.string ? new Date(anime.aired.string).getFullYear() : null,
-      type: 'TV', // valor por defecto
-    };
-    
-    addToList.mutate({
-      anime: animeData,
-      status: status,
-    });
-  };
 
   if (loading || isLoading) {
     return (
@@ -152,22 +122,28 @@ export default function AnimeDetails() {
                   alt={anime.title}
                   className="w-full h-auto rounded-t-lg"
                 />
-                <div className="p-4 space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Agregar a mi lista:</label>
-                    <Select onValueChange={(value) => handleAddToList(value as AnimeStatus)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar estado" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(statusConfig).map(([key, label]) => (
-                          <SelectItem key={key} value={key}>
-                            {label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="p-4">
+                  <AddAnimeDialog 
+                    anime={{
+                      mal_id: anime.mal_id,
+                      title: anime.title,
+                      title_english: anime.title_english || null,
+                      images: {
+                        jpg: {
+                          image_url: anime.images.jpg.large_image_url,
+                          small_image_url: anime.images.jpg.large_image_url,
+                          large_image_url: anime.images.jpg.large_image_url,
+                        }
+                      },
+                      episodes: anime.episodes || null,
+                      synopsis: anime.synopsis || null,
+                      score: anime.score || null,
+                      status: anime.status || null,
+                      genres: anime.genres || [],
+                      year: anime.aired?.string ? new Date(anime.aired.string).getFullYear() : null,
+                      type: 'TV',
+                    }}
+                  />
                 </div>
               </CardContent>
             </Card>

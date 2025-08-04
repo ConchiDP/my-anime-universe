@@ -84,10 +84,12 @@ export const useAddAnimeToList = () => {
   return useMutation({
     mutationFn: async ({ 
       anime, 
-      status 
+      status,
+      score 
     }: { 
       anime: AnimeSearchResult; 
       status: AnimeStatus;
+      score?: number;
     }) => {
       if (!user) throw new Error('Usuario no autenticado');
 
@@ -126,14 +128,20 @@ export const useAddAnimeToList = () => {
       }
 
       // Agregar a la lista del usuario
+      const insertData: any = {
+        user_id: user.id,
+        anime_id: animeId,
+        status,
+        episodes_watched: 0,
+      };
+      
+      if (score !== undefined) {
+        insertData.score = score;
+      }
+
       const { data, error } = await supabase
         .from('user_anime_lists')
-        .upsert({
-          user_id: user.id,
-          anime_id: animeId,
-          status,
-          episodes_watched: 0,
-        })
+        .upsert(insertData)
         .select()
         .single();
 

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimeTypeBadge } from "@/components/AnimeTypeBadge";
 import { AnimeTypeFilter } from "@/components/AnimeTypeFilter";
+import { StarRating } from "@/components/StarRating";
 import { Star, Edit, Play, Pause, CheckCircle, XCircle, Clock, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -51,6 +52,10 @@ export default function MyList() {
     updateStatus.mutate({ entryId, status: newStatus });
   };
 
+  const handleRatingChange = (entryId: string, newRating: number) => {
+    updateStatus.mutate({ entryId, score: newRating });
+  };
+
   const AnimeCard = ({ entry }: { entry: typeof animeList[0] }) => {
     const statusInfo = statusConfig[entry.status as keyof typeof statusConfig];
     const Icon = statusInfo.icon;
@@ -72,20 +77,25 @@ export default function MyList() {
                   {statusInfo.label}
                 </Badge>
                 <AnimeTypeBadge type={entry.animes.type || 'Unknown'} />
-                {entry.score && (
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm">{entry.score}/10</span>
-                  </div>
-                )}
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 space-y-3">
               {entry.animes.episodes && (
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="text-sm text-muted-foreground">
                   Episodios: {entry.episodes_watched || 0}/{entry.animes.episodes}
                 </p>
               )}
+              
+              {/* Sistema de calificación */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Tu calificación:</label>
+                <StarRating
+                  rating={entry.score || 0}
+                  onRatingChange={(rating) => handleRatingChange(entry.id, rating)}
+                  size="sm"
+                />
+              </div>
+
               <Select onValueChange={(value) => handleStatusChange(entry.id, value as AnimeStatus)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Cambiar estado" />
