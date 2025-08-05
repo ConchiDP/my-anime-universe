@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProfileEditProps {
   open: boolean;
@@ -17,9 +18,31 @@ interface ProfileEditProps {
 export const ProfileEdit = ({ open, onClose }: ProfileEditProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [displayName, setDisplayName] = useState(user?.email || "");
+  const [displayName, setDisplayName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // Cargar datos del perfil al abrir el dialog
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (user && open) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('display_name, avatar_url')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (data) {
+          setDisplayName(data.display_name || "");
+          setAvatarUrl(data.avatar_url || "");
+        } else {
+          setDisplayName(user.email || "");
+        }
+      }
+    };
+    
+    loadProfile();
+  }, [user, open]);
 
   const handleSave = async () => {
     setSaving(true);
