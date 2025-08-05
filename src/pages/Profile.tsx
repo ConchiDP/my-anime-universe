@@ -93,7 +93,11 @@ export default function Profile() {
             <CardHeader className="text-center">
               <div className="relative mx-auto w-24 h-24 mb-4">
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} alt="Avatar" />
+                  <AvatarImage 
+                    src={profile?.avatar_url || "/placeholder.svg"} 
+                    alt="Avatar" 
+                    className="object-cover"
+                  />
                   <AvatarFallback className="text-2xl">
                     {(profile?.display_name || user.email)?.charAt(0).toUpperCase()}
                   </AvatarFallback>

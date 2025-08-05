@@ -99,7 +99,11 @@ export const ProfileEdit = ({ open, onClose }: ProfileEditProps) => {
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
               <Avatar className="w-20 h-20">
-                <AvatarImage src={avatarUrl || "/placeholder.svg"} alt="Avatar" />
+                <AvatarImage 
+                  src={avatarUrl || "/placeholder.svg"} 
+                  alt="Avatar" 
+                  className="object-cover"
+                />
                 <AvatarFallback className="text-xl">
                   {displayName.charAt(0).toUpperCase()}
                 </AvatarFallback>
