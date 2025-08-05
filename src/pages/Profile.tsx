@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { useUserAnimeList } from "@/hooks/useUserAnimeList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,8 +24,14 @@ const statusConfig = {
 
 export default function Profile() {
   const { user, loading } = useAuth();
+  const { profile, loading: profileLoading, refetch: refetchProfile } = useProfile();
   const { data: animeList, error, isLoading } = useUserAnimeList();
   const [showEditProfile, setShowEditProfile] = useState(false);
+
+  const handleProfileClose = () => {
+    setShowEditProfile(false);
+    refetchProfile(); // Recargar perfil después de editar
+  };
 
   if (loading) return <div className="p-4">Cargando usuario...</div>;
   if (!user) return <div className="p-4">No estás autenticado.</div>;
@@ -86,9 +93,9 @@ export default function Profile() {
             <CardHeader className="text-center">
               <div className="relative mx-auto w-24 h-24 mb-4">
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src="/placeholder.svg" alt="Avatar" />
+                  <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} alt="Avatar" />
                   <AvatarFallback className="text-2xl">
-                    {user.email?.charAt(0).toUpperCase()}
+                    {(profile?.display_name || user.email)?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <Button 
@@ -100,7 +107,7 @@ export default function Profile() {
                 </Button>
               </div>
               <CardTitle className="flex items-center justify-center gap-2">
-                {user.email}
+                {profile?.display_name || user.email}
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -200,7 +207,7 @@ export default function Profile() {
       {showEditProfile && (
         <ProfileEdit 
           open={showEditProfile} 
-          onClose={() => setShowEditProfile(false)} 
+          onClose={handleProfileClose} 
         />
       )}
     </div>
