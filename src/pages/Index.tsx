@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { Footer } from '@/components/Footer';
+import { FriendsActivity } from '@/components/FriendsActivity';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 
@@ -33,6 +34,11 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto">
+            <FriendsActivity />
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
