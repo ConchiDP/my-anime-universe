@@ -30,7 +30,7 @@ export const ProfileEdit = ({ open, onClose }: ProfileEditProps) => {
           .from('profiles')
           .select('display_name, avatar_url')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
         
         if (data) {
           setDisplayName(data.display_name || "");
@@ -45,16 +45,27 @@ export const ProfileEdit = ({ open, onClose }: ProfileEditProps) => {
   }, [user, open]);
 
   const handleSave = async () => {
+    if (!user) return;
+    
     setSaving(true);
     try {
-      // Aquí iría la lógica para actualizar el perfil
-      // Por ahora solo mostramos un toast de éxito
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          display_name: displayName,
+          avatar_url: avatarUrl || null
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
       toast({
         title: "Perfil actualizado",
         description: "Tus cambios han sido guardados correctamente.",
       });
       onClose();
     } catch (error) {
+      console.error('Error updating profile:', error);
       toast({
         title: "Error",
         description: "No se pudo actualizar el perfil.",
