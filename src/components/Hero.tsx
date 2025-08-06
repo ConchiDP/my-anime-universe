@@ -2,6 +2,7 @@ import { PlayCircle, Star, TrendingUp, Users, Plus, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { useUserAnimeList } from '@/hooks/useUserAnimeList';
 import { useAnimeSearch } from '@/hooks/useAnimeSearch';
 import { useState, useEffect } from 'react';
@@ -9,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 export function Hero() {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const { data: userAnimeList, isLoading: isLoadingList } = useUserAnimeList();
   const [trendingAnimes, setTrendingAnimes] = useState<any[]>([]);
@@ -68,7 +70,7 @@ export function Hero() {
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl animate-fade-in">
             ¡Bienvenido de vuelta,
             <span className="block bg-gradient-hero bg-clip-text text-transparent">
-              {user?.email?.split('@')[0] || 'Otaku'}!
+              {profile?.display_name || user?.email?.split('@')[0] || 'Otaku'}!
             </span>
           </h1>
           
