@@ -16,6 +16,13 @@ import Friends from "./pages/Friends";
 import FriendComparison from "./pages/FriendComparison";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import Contacto from "./pages/Contacto";
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import TerminosServicio from "./pages/TerminosServicio";
+import AvisoLegal from "./pages/AvisoLegal";
+import PoliticaCookies from "./pages/PoliticaCookies";
+import RGPD from "./pages/RGPD";
+import Accesibilidad from "./pages/Accesibilidad";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +45,13 @@ const App = () => (
               <Route path="/friends/compare/:friendId" element={<FriendComparison />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/contacto" element={<Contacto />} />
+              <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+              <Route path="/terminos-servicio" element={<TerminosServicio />} />
+              <Route path="/aviso-legal" element={<AvisoLegal />} />
+              <Route path="/politica-cookies" element={<PoliticaCookies />} />
+              <Route path="/rgpd" element={<RGPD />} />
+              <Route path="/accesibilidad" element={<Accesibilidad />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

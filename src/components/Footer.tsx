@@ -27,50 +27,23 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Enlaces Rápidos</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/discover" className="text-muted-foreground hover:text-primary transition-colors">
-                  Descubrir
+                <a href="/search" className="text-muted-foreground hover:text-primary transition-colors">
+                  Buscar Anime
                 </a>
               </li>
               <li>
-                <a href="/trending" className="text-muted-foreground hover:text-primary transition-colors">
-                  Tendencias
+                <a href="/my-list" className="text-muted-foreground hover:text-primary transition-colors">
+                  Mi Lista
                 </a>
               </li>
               <li>
-                <a href="/top-rated" className="text-muted-foreground hover:text-primary transition-colors">
-                  Mejor Valorados
+                <a href="/friends" className="text-muted-foreground hover:text-primary transition-colors">
+                  Amigos
                 </a>
               </li>
               <li>
-                <a href="/new-releases" className="text-muted-foreground hover:text-primary transition-colors">
-                  Nuevos Lanzamientos
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Community */}
-          <div>
-            <h3 className="font-semibold mb-4">Comunidad</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/forums" className="text-muted-foreground hover:text-primary transition-colors">
-                  Foros
-                </a>
-              </li>
-              <li>
-                <a href="/reviews" className="text-muted-foreground hover:text-primary transition-colors">
-                  Reseñas
-                </a>
-              </li>
-              <li>
-                <a href="/recommendations" className="text-muted-foreground hover:text-primary transition-colors">
-                  Recomendaciones
-                </a>
-              </li>
-              <li>
-                <a href="/lists" className="text-muted-foreground hover:text-primary transition-colors">
-                  Listas Populares
+                <a href="/profile" className="text-muted-foreground hover:text-primary transition-colors">
+                  Mi Perfil
                 </a>
               </li>
             </ul>
@@ -81,23 +54,45 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Soporte</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/help" className="text-muted-foreground hover:text-primary transition-colors">
-                  Centro de Ayuda
-                </a>
-              </li>
-              <li>
-                <a href="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="/contacto" className="text-muted-foreground hover:text-primary transition-colors">
                   Contacto
                 </a>
               </li>
               <li>
-                <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">
-                  Privacidad
+                <a href="/politica-privacidad" className="text-muted-foreground hover:text-primary transition-colors">
+                  Política de Privacidad
                 </a>
               </li>
               <li>
-                <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors">
-                  Términos
+                <a href="/terminos-servicio" className="text-muted-foreground hover:text-primary transition-colors">
+                  Términos de Servicio
+                </a>
+              </li>
+              <li>
+                <a href="/aviso-legal" className="text-muted-foreground hover:text-primary transition-colors">
+                  Aviso Legal
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="/politica-cookies" className="text-muted-foreground hover:text-primary transition-colors">
+                  Política de Cookies
+                </a>
+              </li>
+              <li>
+                <a href="/rgpd" className="text-muted-foreground hover:text-primary transition-colors">
+                  Información RGPD
+                </a>
+              </li>
+              <li>
+                <a href="/accesibilidad" className="text-muted-foreground hover:text-primary transition-colors">
+                  Accesibilidad
                 </a>
               </li>
             </ul>
