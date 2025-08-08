@@ -31,8 +31,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Extract the JWT token from the Bearer header
     const token = authHeader.replace('Bearer ', '');
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseUrl = "https://hbwcwjutcgojftypzxdm.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhid2N3anV0Y2dvamZ0eXB6eGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NTkyNTEsImV4cCI6MjA2ODIzNTI1MX0.1isSvWuMIhQsroLhwBT1qkV_Hsv1XVu4KX7rVxeoYys";
     const supabase = createClient(supabaseUrl, supabaseKey, {
       auth: { 
         autoRefreshToken: false,
