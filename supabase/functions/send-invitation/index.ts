@@ -22,7 +22,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Get auth user
+    // Get auth user from JWT token
     const authHeader = req.headers.get('authorization');
     if (!authHeader) {
       throw new Error('No authorization header');
@@ -33,23 +33,17 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabaseUrl = "https://hbwcwjutcgojftypzxdm.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhid2N3anV0Y2dvamZ0eXB6eGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NTkyNTEsImV4cCI6MjA2ODIzNTI1MX0.1isSvWuMIhQsroLhwBT1qkV_Hsv1XVu4KX7rVxeoYys";
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      auth: { 
-        autoRefreshToken: false,
-        persistSession: false 
-      },
-      global: {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      },
-    });
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Verify user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Verify user is authenticated by getting user with the token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
-      throw new Error('User not authenticated');
+      console.error('Authentication error:', authError);
+      throw new Error(`User not authenticated: ${authError?.message || 'No user found'}`);
     }
+
+    console.log('User authenticated:', user.id);
 
     const { email, inviterName }: InvitationRequest = await req.json();
 
