@@ -67,9 +67,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Create invitation link
     const invitationLink = `${supabaseUrl.replace('https://supabase.co', '.lovableproject.com')}/auth?invite=${invitationCode}`;
     
-    // Send invitation email
+    // Send invitation email using Resend's default domain
     const emailResponse = await resend.emails.send({
-      from: "My Anime Universe <invitations@resend.dev>",
+      from: "My Anime Universe <onboarding@resend.dev>",
       to: [email],
       subject: `${inviterName} te ha invitado a My Anime Universe!`,
       html: `
