@@ -40,13 +40,9 @@ export const useSearchUsersAndEmails = (searchTerm: string) => {
           return { users: [], isEmail: true, emailExists: false, email: searchTerm.toLowerCase() };
         }
       } else {
-        // Búsqueda normal por nombre
+        // Búsqueda normal por nombre (sin email usando función segura)
         const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .or(`display_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`)
-          .neq('user_id', user?.id || '')
-          .limit(10);
+          .rpc('get_searchable_profiles', { search_term: searchTerm });
         
         if (error) throw error;
         return { users: data || [], isEmail: false };

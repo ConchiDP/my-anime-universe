@@ -7,9 +7,17 @@ export interface Profile {
   id: string;
   user_id: string;
   display_name: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
+  email?: string; // Email solo disponible para el propio perfil
+  avatar_url?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface SearchableProfile {
+  id: string;
+  user_id: string;
+  display_name: string;
+  avatar_url?: string;
 }
 
 export interface Friendship {
@@ -29,18 +37,15 @@ export const useSearchUsers = (searchTerm: string) => {
   
   return useQuery({
     queryKey: ['searchUsers', searchTerm],
-    queryFn: async () => {
+    queryFn: async (): Promise<SearchableProfile[]> => {
       if (!searchTerm.trim() || searchTerm.length < 2) return [];
       
+      // Usar función segura para búsqueda (sin emails)
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`display_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`)
-        .neq('user_id', user?.id || '')
-        .limit(10);
+        .rpc('get_searchable_profiles', { search_term: searchTerm });
       
       if (error) throw error;
-      return data as Profile[];
+      return data || [];
     },
     enabled: !!user && searchTerm.length >= 2,
   });
