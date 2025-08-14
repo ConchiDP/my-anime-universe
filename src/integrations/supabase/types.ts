@@ -192,7 +192,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_searchable_profiles: {
+        Args: { search_term: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          id: string
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
