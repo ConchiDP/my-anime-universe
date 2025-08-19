@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.51.0';
 import { Resend } from "npm:resend@2.0.0";
@@ -32,12 +33,23 @@ const handler = async (req: Request): Promise<Response> => {
     const token = authHeader.replace('Bearer ', '');
 
     const supabaseUrl = "https://hbwcwjutcgojftypzxdm.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhid2N3anV0Y2dvamZ0eXB6eGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NTkyNTEsImV4cCI6MjA2ODIzNTI1MX0.1isSvWuMIhQsroLhwBT1qkV_Hsv1XVu4KX7rVxeoYys";
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    if (!supabaseServiceKey) {
+      throw new Error('SUPABASE_SERVICE_ROLE_KEY not configured');
+    }
+
+    // Create client with service role key for database operations
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Create client with anon key for user verification
+    const supabaseAnon = createClient(
+      supabaseUrl, 
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhid2N3anV0Y2dvamZ0eXB6eGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NTkyNTEsImV4cCI6MjA2ODIzNTI1MX0.1isSvWuMIhQsroLhwBT1qkV_Hsv1XVu4KX7rVxeoYys"
+    );
 
     // Verify user is authenticated by getting user with the token
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const { data: { user }, error: authError } = await supabaseAnon.auth.getUser(token);
     if (authError || !user) {
       console.error('Authentication error:', authError);
       throw new Error(`User not authenticated: ${authError?.message || 'No user found'}`);
@@ -50,8 +62,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Generate unique invitation code
     const invitationCode = crypto.randomUUID();
     
-    // Save invitation to database
-    const { error: dbError } = await supabase
+    // Save invitation to database using admin client
+    const { error: dbError } = await supabaseAdmin
       .from('friend_invitations')
       .insert({
         inviter_id: user.id,
@@ -61,6 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
       });
 
     if (dbError) {
+      console.error('Database error:', dbError);
       throw new Error(`Database error: ${dbError.message}`);
     }
 
